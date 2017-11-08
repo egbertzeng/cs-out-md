@@ -1,5 +1,8 @@
-
-一、规划和策略
+【云星数据---大数据部集群署系列006】：spark2.2部署方案
+###  一、规划和策略
+    策略：
+        在bigdata6上安装，然后分发到其他机器
+```
     规划
         集群一(保障各个节点上的Scala已经安装完成)
         master port 8888
@@ -11,10 +14,11 @@
         bigdata003  worker
         bigdata004  worker
         bigdata006  worker
+```
 
-    策略：
-        在bigdata6上安装，然后分发到其他机器
-二、下载、解压、分发
+
+### 二、下载、解压、分发
+```
     下载spark
          wget https://d3kbcqa49mib13.cloudfront.net/spark-2.2.0-bin-hadoop2.7.tgz
     解压spark
@@ -24,8 +28,11 @@
         scp -r spark-2.2.0-bin-hadoop2.7 bigdata003:/cloudstar/software/
         scp -r spark-2.2.0-bin-hadoop2.7 bigdata004:/cloudstar/software/
         scp -r spark-2.2.0-bin-hadoop2.7 bigdata005:/cloudstar/software/
+```
+
                
-三、配置并分发环境变量
+### 三、配置并分发环境变量
+```$xslt
 1.配置环境变量
     vim　~/.bashrc
     配置如下内容：
@@ -41,9 +48,11 @@
         scp ~/.bashrc bigdata008:~/.bashrc
         scp ~/.bashrc bigdata009:~/.bashrc
         scp ~/.bashrc bigdata010:~/.bashrc
+```
 
 三、配置spark 
-        1.配置spark的env文件
+```$xslt
+ 1.配置spark的env文件
             cp  ${SPARK_HOME}/conf/spark-env.sh.template ${SPARK_HOME}/conf/spark-env.sh
             vim ${SPARK_HOME}/conf/spark-env.sh
             a.无HA的配置方式(没有采用)
@@ -74,7 +83,6 @@
                 ###指定hadoop集群的配置文件目录
                 export SPARK_DAEMON_JAVA_OPTS="-Dspark.deploy.recoveryMode=ZOOKEEPER -Dspark.deploy.zookeeper.url=bigdata001:2181,bigdata002:2181,bigdata003:2181 -Dspark.deploy.zookeeper.dir=/spark"
                      
-     
         2.配置spark的slave文件
               cp   ${SPARK_HOME}/conf/slaves.template ${SPARK_HOME}/conf/slaves
               vim  ${SPARK_HOME}/conf/slaves
@@ -84,13 +92,18 @@
                 bigdata003
                 bigdata004
                 bigdata005
+
+```
                 
-四、分发spark配置文件(在bigdata6上执行)
+### 四、分发spark配置文件(在bigdata6上执行)
+```$xslt
     scp -r ${SPARK_HOME}/conf/ bigdata002:${SPARK_HOME}/
     scp -r ${SPARK_HOME}/conf/ bigdata003:${SPARK_HOME}/
     scp -r ${SPARK_HOME}/conf/ bigdata004:${SPARK_HOME}/
     scp -r ${SPARK_HOME}/conf/ bigdata005:${SPARK_HOME}/
-五、操作spark集群
+```
+### 五、操作spark集群
+```$xslt
     1.启动服务器：
         在bigdata001上执行：${SPARK_HOME}/sbin/start-all.sh 
     2.验证服务器：
@@ -131,3 +144,5 @@
             ${SPARK_HOME}/sbin/start-history-server.sh
         f.启动spark-shell
             ${SPARK_HOME}/bin/spark-shell
+
+```

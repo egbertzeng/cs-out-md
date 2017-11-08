@@ -1,4 +1,4 @@
-## 云星数据（深圳）有限公司-大数据团队-【大数据部集群署系列003】：scala部署方案
+【云星数据---大数据部集群署系列004】：scala部署方案
 ### 1.下载并解压scala
 ```
 wget https://downloads.lightbend.com/scala/2.10.6/scala-2.10.6.tgz

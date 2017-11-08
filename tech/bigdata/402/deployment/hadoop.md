@@ -1,22 +1,30 @@
-
-一、规划和策略
+【云星数据---大数据部集群署系列005】：hadoop3.0部署方案
+### 一、规划和策略
+   在bigdata001上配置，而后同步到其他机器上。
+```
     bigdata001    master
     bigdata002    master
     bigdata003    slave
     bigdata004    slave
     bigdata005    slave
-   在bigdata001上配置，而后同步到其他机器上。
-二、下载hadoop
+```
+
+### 二、下载,解压，分发hadoop
+```
+下载
     wget http://mirror.bit.edu.cn/apache/hadoop/common/hadoop-3.0.0-beta1/hadoop-3.0.0-beta1.tar.gz
-三、解压hadoop
+解压
     tar -zxvf  hadoop-3.0.0-beta1.tar.gz  
-四、分发hadoop
+分发hadoop
     scp -r /cloudstar/software/hadoop-3.0.0-beta1    bigdata002:/cloudstar/software/
     scp -r /cloudstar/software/hadoop-3.0.0-beta1    bigdata003:/cloudstar/software/
     scp -r /cloudstar/software/hadoop-3.0.0-beta1    bigdata004:/cloudstar/software/
     scp -r /cloudstar/software/hadoop-3.0.0-beta1    bigdata005:/cloudstar/software/
-五、配置hadoop
-    1.配置hadoop的运行环境
+```
+
+### 三、配置hadoop
+```
+   1.配置hadoop的运行环境
             vim ${HADOOP_HOME}/etc/hadoop/hadoop-env.sh
             在此文件中只需要配置jdk的路径即可：
             找到: export java_home=${java_home}这一行，修改为：
@@ -195,13 +203,18 @@
                 </property>
             </configuration>
 
-六、分发hadoop的配置文件
+```
+### 四、分发hadoop的配置文件
+```
     scp  -r ${HADOOP_HOME}/etc/hadoop/  bigdata002:${HADOOP_HOME}/etc/
     scp  -r ${HADOOP_HOME}/etc/hadoop/  bigdata003:${HADOOP_HOME}/etc/
     scp  -r ${HADOOP_HOME}/etc/hadoop/  bigdata004:${HADOOP_HOME}/etc/
     scp  -r ${HADOOP_HOME}/etc/hadoop/  bigdata005:${HADOOP_HOME}/etc/
-七、初始hadoop集群
-        1.启动journalnode(在规划的journalnode主机上执行)
+```
+
+### 七、初始hadoop集群
+```
+   1.启动journalnode(在规划的journalnode主机上执行)
                 因为我们的journalnode规划在bigdata001,bigdat002上，
                 因此我们可以只在这三台机器上执行如下命令：
                 ${HADOOP_HOME}/sbin/hadoop-daemons.sh start journalnode
@@ -240,9 +253,10 @@
             ${HADOOP_HOME}/sbin/hadoop-daemons.sh start datanode
             ${HADOOP_HOME}/sbin/yarn-daemons.sh start resourcemanager
             ${HADOOP_HOME}/sbin/yarn-daemons.sh start nodemanager
- 
-六、验证hadoop集群
-        1.验证hdfs
+```
+### 六、验证hadoop集群
+```
+ 1.验证hdfs
                 a.在不同的主机上执行jps命令可以看到相应的进程
                 b.在windows上用浏览器查看：http://bigdata001:50070 #能看到namenode的管理界面
                 c.我们的bigdata6、bigdata7一个为ha的active状态,另一个则是standby状态。
@@ -252,8 +266,5 @@
                 c.可以成功执行单词计数示例程序：
                   ${HADOOP_HOME}/bin/hadoop  jar  ${HADOOP_HOME}/share/hadoop/mapreduce/ hadoop-mapreduce-examples-3.0.0-beta1.jar  作业名称 /输入目录 /输出目录
                   ${HADOOP_HOME}/bin/hadoop  jar  ${HADOOP_HOME}/share/hadoop/mapreduce/ hadoop-mapreduce-examples-3.0.0-beta1.jar  wordcount  /data/mr/in/ /data/mr/out/test001
-
-
-
-
+```       
 
